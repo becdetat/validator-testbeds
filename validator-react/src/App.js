@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import { Validator } from './validator'
 
+const MINIMUM_PASSWORD_LENGTH = 6
+
 class App extends Component {
   constructor(props, context) {
     super(props, context)
@@ -9,9 +11,12 @@ class App extends Component {
     this.state = {
       firstName: '',
       lastName: '',
+      password: '',
       validator: new Validator({
         firstNameRequired: state => !!state.firstName,
         lastNameRequired: state => !!state.lastName,
+        passwordRequired: state => !!state.password,
+        passwordLength: state => !state.password || state.password.length >= MINIMUM_PASSWORD_LENGTH
       })
     }
   }
@@ -31,6 +36,16 @@ class App extends Component {
     this.setState(state => {
       state.lastName = lastName
       state.validator.validateLastNameRequired(state)
+    })
+  }
+
+  handlePasswordChanged(e) {
+    const password = e.target.value
+
+    this.setState(state => {
+      state.password = password
+      state.validator.validatePasswordRequired(state)
+      state.validator.validatePasswordLength(state)
     })
   }
 
@@ -66,6 +81,14 @@ class App extends Component {
              placeholder="Last name"
              onChange={e => this.handleLastNameChanged(e)}/>
              {this.state.validator.lastNameRequiredValid || <div>Please provide your last name</div>}
+          </div>
+          <div className="form-row">
+            <label htmlFor="password">Password</label>
+            <input type="password" className="form-control" id="password"
+              placeholder="Password"
+              onChange={e => this.handlePasswordChanged(e)}/>
+            {this.state.validator.passwordRequiredValid || <div>Please provide your password</div>}
+            {this.state.validator.passwordLengthValid || <div>Your password must be at least {MINIMUM_PASSWORD_LENGTH} characters</div>}
           </div>
           <br/>
           <div className="form-row">
