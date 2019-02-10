@@ -3,6 +3,8 @@ import './App.css';
 import { Validator } from './validator'
 
 const MINIMUM_PASSWORD_LENGTH = 6
+// from https://emailregex.com/
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 class App extends Component {
   constructor(props, context) {
@@ -10,15 +12,24 @@ class App extends Component {
   
     this.state = {
       firstName: '',
+      firstNameRequiredValid: true,
       lastName: '',
+      lastNameRequiredValid: true,
       password: '',
-      validator: new Validator({
-        firstNameRequired: state => !!state.firstName,
-        lastNameRequired: state => !!state.lastName,
-        passwordRequired: state => !!state.password,
-        passwordLength: state => !state.password || state.password.length >= MINIMUM_PASSWORD_LENGTH
-      })
+      passwordRequiredValid: true,
+      passwordLengthValid: true,
+      email: '',
+      emailRequiredValid: true,
+      emailRegexValid: true,
     }
+    this.validator = new Validator({
+      firstNameRequired: state => !!state.firstName,
+      lastNameRequired: state => !!state.lastName,
+      passwordRequired: state => !!state.password,
+      passwordLength: state => !state.password || state.password.length >= MINIMUM_PASSWORD_LENGTH,
+      emailRequired: state => !!state.email,
+      emailRegex: state => !state.email || !!state.email.match(EMAIL_REGEX)
+    })
   }
 
   handleFirstNameChanged(e) {
@@ -26,7 +37,9 @@ class App extends Component {
 
     this.setState(state => {
       state.firstName = firstName
-      state.validator.validateFirstNameRequired(state)
+      state.firstNameRequiredValid = this.validator.validateFirstNameRequired(state)
+
+      return state
     })
   }
 
@@ -35,7 +48,9 @@ class App extends Component {
 
     this.setState(state => {
       state.lastName = lastName
-      state.validator.validateLastNameRequired(state)
+      state.lastNameRequiredValid = this.validator.validateLastNameRequired(state)
+
+      return state
     })
   }
 
@@ -44,8 +59,22 @@ class App extends Component {
 
     this.setState(state => {
       state.password = password
-      state.validator.validatePasswordRequired(state)
-      state.validator.validatePasswordLength(state)
+      state.passwordRequiredValid = this.validator.validatePasswordRequired(state)
+      state.passwordLengthValid = this.validator.validatePasswordLength(state)
+
+      return state
+    })
+  }
+
+  handleEmailChanged(e) {
+    const email = e.target.value
+
+    this.setState(state => {
+      state.email = email
+      state.emailRequiredValid = this.validator.validateEmailRequired(state)
+      state.emailRegexValid = this.validator.validateEmailRegex(state)
+
+      return state
     })
   }
 
@@ -53,9 +82,9 @@ class App extends Component {
     e.preventDefault()
 
     this.setState(
-      state => state.validator.validateForm(state),
+      state => this.validator.validateForm(state),
       () => {
-        if (!this.state.validator.formValid) return
+        if (!this.validator.formValid) return
 
         alert('Submitting form')
         console.log(this.state)
@@ -73,22 +102,30 @@ class App extends Component {
             <input type="text" className="form-control" id="firstName"
               placeholder="First name"
               onChange={e => this.handleFirstNameChanged(e)} />
-            {this.state.validator.firstNameRequiredValid || <div>Please provide your first name</div>}
+            {this.state.firstNameRequiredValid || <div>Please provide your first name</div>}
           </div>
           <div className="form-row">
             <label htmlFor="lastName">Last name</label>
-            <input type="text" className="form-control" id="firstName"
+            <input type="text" className="form-control" id="lastName"
              placeholder="Last name"
              onChange={e => this.handleLastNameChanged(e)}/>
-             {this.state.validator.lastNameRequiredValid || <div>Please provide your last name</div>}
+             {this.state.lastNameRequiredValid || <div>Please provide your last name</div>}
+          </div>
+          <div className="form-row">
+            <label htmlFor="email">Email</label>
+            <input type="email" className="form-control" id="email"
+              placeholder="Email"
+              onChange={e => this.handleEmailChanged(e)}/>
+            {this.state.emailRequiredValid || <div>Please provide your email</div>}
+            {this.state.emailRegexValid || <div>Please provide a valid email</div>}
           </div>
           <div className="form-row">
             <label htmlFor="password">Password</label>
             <input type="password" className="form-control" id="password"
               placeholder="Password"
               onChange={e => this.handlePasswordChanged(e)}/>
-            {this.state.validator.passwordRequiredValid || <div>Please provide your password</div>}
-            {this.state.validator.passwordLengthValid || <div>Your password must be at least {MINIMUM_PASSWORD_LENGTH} characters</div>}
+            {this.state.passwordRequiredValid || <div>Please provide your password</div>}
+            {this.state.passwordLengthValid || <div>Your password must be at least {MINIMUM_PASSWORD_LENGTH} characters</div>}
           </div>
           <br/>
           <div className="form-row">
