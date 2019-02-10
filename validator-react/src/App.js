@@ -21,6 +21,9 @@ class App extends Component {
       email: '',
       emailRequiredValid: true,
       emailRegexValid: true,
+      verifyPassword: '',
+      verifyPasswordRequiredValid: true,
+      verifyPasswordMatchesValid: true
     }
     this.validator = new Validator({
       firstNameRequired: state => !!state.firstName,
@@ -28,7 +31,9 @@ class App extends Component {
       passwordRequired: state => !!state.password,
       passwordLength: state => !state.password || state.password.length >= MINIMUM_PASSWORD_LENGTH,
       emailRequired: state => !!state.email,
-      emailRegex: state => !state.email || !!state.email.match(EMAIL_REGEX)
+      emailRegex: state => !state.email || !!state.email.match(EMAIL_REGEX),
+      verifyPasswordRequired: state => !!state.verifyPassword,
+      verifyPasswordMatches: state => !state.verifyPassword || state.verifyPassword === state.password
     })
   }
 
@@ -73,6 +78,18 @@ class App extends Component {
       state.email = email
       state.emailRequiredValid = this.validator.validateEmailRequired(state)
       state.emailRegexValid = this.validator.validateEmailRegex(state)
+
+      return state
+    })
+  }
+
+  handleVerifyPasswordChanged(e) {
+    const verifyPassword = e.target.value
+
+    this.setState(state => {
+      state.verifyPassword = verifyPassword
+      state.verifyPasswordRequiredValid = this.validator.validateVerifyPasswordRequired(state)
+      state.verifyPasswordMatchesValid = this.validator.validateVerifyPasswordMatches(state)
 
       return state
     })
@@ -126,6 +143,14 @@ class App extends Component {
               onChange={e => this.handlePasswordChanged(e)}/>
             {this.state.passwordRequiredValid || <div>Please provide your password</div>}
             {this.state.passwordLengthValid || <div>Your password must be at least {MINIMUM_PASSWORD_LENGTH} characters</div>}
+          </div>
+          <div className="form-row">
+            <label htmlFor="verifyPassword">Verify password</label>
+            <input type="password" className="form-control" id="verifyPassword"
+              placeholder="Verify password"
+              onChange={e => this.handleVerifyPasswordChanged(e)}/>
+              {this.state.verifyPasswordRequiredValid || <div>Please verify your password</div>}
+              {this.state.verifyPasswordMatchesValid || <div>The passwords must match</div>}
           </div>
           <br/>
           <div className="form-row">
