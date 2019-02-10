@@ -119,38 +119,38 @@ class App extends Component {
             <input type="text" className="form-control" id="firstName"
               placeholder="First name"
               onChange={e => this.handleFirstNameChanged(e)} />
-            {this.state.firstNameRequiredValid || <div>Please provide your first name</div>}
+            {this.state.firstNameRequiredValid || <small className="form-text text-muted">Please provide your first name</small>}
           </div>
           <div className="form-row">
             <label htmlFor="lastName">Last name</label>
             <input type="text" className="form-control" id="lastName"
              placeholder="Last name"
              onChange={e => this.handleLastNameChanged(e)}/>
-             {this.state.lastNameRequiredValid || <div>Please provide your last name</div>}
+             {this.state.lastNameRequiredValid || <small className="form-text text-muted">Please provide your last name</small>}
           </div>
           <div className="form-row">
             <label htmlFor="email">Email</label>
             <input type="email" className="form-control" id="email"
               placeholder="Email"
               onChange={e => this.handleEmailChanged(e)}/>
-            {this.state.emailRequiredValid || <div>Please provide your email</div>}
-            {this.state.emailRegexValid || <div>Please provide a valid email</div>}
+            {this.state.emailRequiredValid || <small className="form-text text-muted">Please provide your email</small>}
+            {this.state.emailRegexValid || <small className="form-text text-muted">Please provide a valid email</small>}
           </div>
           <div className="form-row">
             <label htmlFor="password">Password</label>
             <input type="password" className="form-control" id="password"
               placeholder="Password"
               onChange={e => this.handlePasswordChanged(e)}/>
-            {this.state.passwordRequiredValid || <div>Please provide your password</div>}
-            {this.state.passwordLengthValid || <div>Your password must be at least {MINIMUM_PASSWORD_LENGTH} characters</div>}
+            {this.state.passwordRequiredValid || <small className="form-text text-muted">Please provide your password</small>}
+            {this.state.passwordLengthValid || <small className="form-text text-muted">Your password must be at least {MINIMUM_PASSWORD_LENGTH} characters</small>}
           </div>
           <div className="form-row">
             <label htmlFor="verifyPassword">Verify password</label>
             <input type="password" className="form-control" id="verifyPassword"
               placeholder="Verify password"
               onChange={e => this.handleVerifyPasswordChanged(e)}/>
-              {this.state.verifyPasswordRequiredValid || <div>Please verify your password</div>}
-              {this.state.verifyPasswordMatchesValid || <div>The passwords must match</div>}
+              {this.state.verifyPasswordRequiredValid || <small className="form-text text-muted">Please verify your password</small>}
+              {this.state.verifyPasswordMatchesValid || <small className="form-text text-muted">The passwords must match</small>}
           </div>
           <br/>
           <div className="form-row">
